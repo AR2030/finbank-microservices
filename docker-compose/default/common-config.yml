@@ -1,0 +1,25 @@
+services:
+  network-deploy-services:
+    networks:
+      - finbank
+
+  microservices-base-config:
+    extends:
+      service: network-deploy-services
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    environment:
+      SPRING_RABBITMQ_HOST: rabbit
+
+
+  microservices-configserver-config:
+    extends:
+      service: microservices-base-config
+    depends_on:
+      configserver:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"

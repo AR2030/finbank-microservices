@@ -1,5 +1,6 @@
 package com.ar2030.finbank.cards;
 
+import com.ar2030.finbank.cards.dto.CardsContactInfoDto;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -7,15 +8,17 @@ import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 @SpringBootApplication
 @EnableJpaAuditing(auditorAwareRef = "auditAwareImpl")
+@EnableConfigurationProperties(value = {CardsContactInfoDto.class})
 @OpenAPIDefinition(
         info = @Info(
                 title = "FinBank cards microservice REST API Documentation",
                 description = "FinBank cards microservice REST API Documentation",
-                version = "v1",
+                version = "v2",
                 contact = @Contact(
                         name = "AR2030",
                         email = "ar2030@gmail.com",

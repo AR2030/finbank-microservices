@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: configserver
+  profiles:
+    active: git
+  cloud:
+    config:
+      server:
+        git:
+          uri: "https://github.com/AR2030/finbank-config-repo"
+          default-label: main
+          timeout: 5
+          clone-on-start: true
+          force-pull: true
+
+management:
+    endpoints:
+      web:
+       exposure:
+        include: "*"
+    health:
+      readinessstate:
+        enabled: true
+      livenessstate:
+        enabled: true
+    endpoint:
+      health:
+        probes:
+          enabled: true
+
+server:
+  port: 8071
