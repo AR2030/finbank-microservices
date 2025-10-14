@@ -1,0 +1,53 @@
+package com.ar2030.finbank.accounts.service.impl;
+
+import com.ar2030.finbank.accounts.dto.*;
+import com.ar2030.finbank.accounts.entity.Accounts;
+import com.ar2030.finbank.accounts.entity.Customer;
+import com.ar2030.finbank.accounts.exception.ResourceNotFoundException;
+import com.ar2030.finbank.accounts.mapper.AccountsMapper;
+import com.ar2030.finbank.accounts.mapper.CustomerMapper;
+import com.ar2030.finbank.accounts.repository.AccountsRepository;
+import com.ar2030.finbank.accounts.repository.CustomerRepository;
+import com.ar2030.finbank.accounts.service.ICustomersService;
+import com.ar2030.finbank.accounts.service.client.CardsFeignClient;
+import com.ar2030.finbank.accounts.service.client.LoansFeignClient;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+
+
+@Service
+@AllArgsConstructor
+public class CustomersServiceImpl implements ICustomersService {
+
+    private AccountsRepository accountsRepository;
+    private CustomerRepository customerRepository;
+    private CardsFeignClient cardsFeignClient;
+    private LoansFeignClient loansFeignClient;
+
+    /**
+     * @param mobileNumber - Input Mobile Number
+     * @return Customer Details based on a given mobileNumber
+     */
+    @Override
+    public CustomerDetailsDto fetchCustomerDetails(String mobileNumber) {
+        Customer customer = customerRepository.findByMobileNumber(mobileNumber).orElseThrow(
+                () -> new ResourceNotFoundException("Customer", "mobileNumber", mobileNumber)
+        );
+        Accounts accounts = accountsRepository.findByCustomerId(customer.getCustomerId()).orElseThrow(
+                () -> new ResourceNotFoundException("Account", "customerId", customer.getCustomerId().toString())
+        );
+
+        CustomerDetailsDto customerDetailsDto = CustomerMapper.mapToCustomerDetailsDto(customer, new CustomerDetailsDto());
+        customerDetailsDto.setAccountsDto(AccountsMapper.mapToAccountsDto(accounts, new AccountsDto()));
+
+        ResponseEntity<LoansDto> loansDtoResponseEntity = loansFeignClient.fetchLoanDetails(mobileNumber);
+        customerDetailsDto.setLoansDto(loansDtoResponseEntity.getBody());
+
+        ResponseEntity<CardsDto> cardsDtoResponseEntity = cardsFeignClient.fetchCardDetails(mobileNumber);
+        customerDetailsDto.setCardsDto(cardsDtoResponseEntity.getBody());
+
+        return customerDetailsDto;
+
+    }
+}

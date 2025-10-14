@@ -50,7 +50,7 @@ services:
       service: network-deploy-services
 
   configserver:
-    image: "ar2030/configserver:v3"
+    image: "ar2030/configserver:v4"
     container_name: "configserver-ms"
     ports:
       - "8071:8071"
@@ -67,8 +67,25 @@ services:
       file: common-config.yml
       service: microservices-base-config
 
+  eurekaserver:
+    image: "ar2030/eurekaserver:v4"
+    container_name: "eurekaserver-ms"
+    ports:
+      - "8070:8070"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8071/actuator/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+    environment:
+      SPRING_APPLICATION_NAME: "eurekaserver"
+
   accounts:
-    image: "ar2030/accounts:v3"
+    image: "ar2030/accounts:v4"
     container_name: "accounts-ms"
     ports:
       - "8080:8080"
@@ -80,10 +97,10 @@ services:
         condition: service_healthy
     extends:
       file: common-config.yml
-      service: microservices-configserver-config
+      service: microservices-eureka-config
 
   loans:
-    image: "ar2030/loans:v3"
+    image: "ar2030/loans:v4"
     container_name: "loans-ms"
     ports:
       - "8090:8090"
@@ -95,10 +112,10 @@ services:
         condition: service_healthy
     extends:
       file: common-config.yml
-      service: microservices-configserver-config
+      service: microservices-eureka-config
 
   cards:
-    image: "ar2030/cards:v3"
+    image: "ar2030/cards:v4"
     container_name: "cards-ms"
     ports:
       - "9000:9000"
@@ -110,7 +127,7 @@ services:
         condition: service_healthy
     extends:
       file: common-config.yml
-      service: microservices-configserver-config
+      service: microservices-eureka-config
 
 networks:
   finbank:

@@ -13,7 +13,7 @@ services:
       retries: 10
       start_period: 5s
     environment:
-      SPRING_DATASOURCE_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: root
 
   microservices-base-config:
     extends:
@@ -35,5 +35,14 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: prod
       SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"
+
+  microservices-eureka-config:
+    extends:
+      service: microservices-configserver-config
+    depends_on:
+      eurekaserver:
+        condition: service_healthy
+    environment:
+      EURKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8070/eureka/"
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root
