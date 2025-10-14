@@ -66,8 +66,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -128,7 +128,7 @@
                         <image>openjdk:21-jdk-slim</image>
                     </from>
                     <to>
-                        <image>ar2030/${project.artifactId}:v2</image>
+                        <image>ar2030/${project.artifactId}:v3</image>
                     </to>
                 </configuration>
             </plugin>

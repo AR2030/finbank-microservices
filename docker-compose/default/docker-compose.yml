@@ -1,4 +1,38 @@
 services:
+  accountsdb:
+    image: mysql
+    container_name: accountsdb
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: accountsdb
+    extends:
+      file: common-config.yml
+      service: microservices-db-config
+
+  loansdb:
+    image: mysql
+    container_name: loansdb
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_DATABASE: loansdb
+    extends:
+      file: common-config.yml
+      service: microservices-db-config
+
+  cardsdb:
+    image: mysql
+    container_name: cardsdb
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_DATABASE: cardsdb
+    extends:
+      file: common-config.yml
+      service: microservices-db-config
+
+
   rabbit:
     image: "rabbitmq:3-management"
     hostname: "rabbitmq"
@@ -16,7 +50,7 @@ services:
       service: network-deploy-services
 
   configserver:
-    image: "ar2030/configserver:v2"
+    image: "ar2030/configserver:v3"
     container_name: "configserver-ms"
     ports:
       - "8071:8071"
@@ -24,47 +58,56 @@ services:
       rabbit:
         condition: service_healthy
     healthcheck:
-      test: "curl --fail --silent http://localhost:8071/actuator/health | grep UP || exit 1"
+      test: ["CMD", "curl", "-f", "http://localhost:8071/actuator/health"]
       interval: 10s
       timeout: 5s
       retries: 10
+      start_period: 10s
     extends:
       file: common-config.yml
       service: microservices-base-config
 
   accounts:
-    image: "ar2030/accounts:v2"
+    image: "ar2030/accounts:v3"
     container_name: "accounts-ms"
     ports:
       - "8080:8080"
     environment:
       SPRING_APPLICATION_NAME: accounts
+      SPRING_DATASOURCE_URL: jdbc:mysql://accountsdb:3306/accountsdb
+    depends_on:
+      accountsdb:
+        condition: service_healthy
     extends:
       file: common-config.yml
       service: microservices-configserver-config
 
   loans:
-    image: "ar2030/loans:v2"
+    image: "ar2030/loans:v3"
     container_name: "loans-ms"
     ports:
       - "8090:8090"
     environment:
       SPRING_APPLICATION_NAME: loans
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"  #prefix always configserver and the hostname as the service name
-      SPRING_PROFILES_ACTIVE: default
+      SPRING_DATASOURCE_URL: jdbc:mysql://loansdb:3306/loansdb
+    depends_on:
+      loansdb:
+        condition: service_healthy
     extends:
       file: common-config.yml
       service: microservices-configserver-config
 
   cards:
-    image: "ar2030/cards:v2"
+    image: "ar2030/cards:v3"
     container_name: "cards-ms"
     ports:
       - "9000:9000"
     environment:
       SPRING_APPLICATION_NAME: cards
-      SPRING_CONFIG_IMPORT: "configserver:http://configserver:8071"  #prefix always configserver and the hostname as the service name
-      SPRING_PROFILES_ACTIVE: default
+      SPRING_DATASOURCE_URL: jdbc:mysql://cardsdb:3306/cardsdb
+    depends_on:
+      cardsdb:
+        condition: service_healthy
     extends:
       file: common-config.yml
       service: microservices-configserver-config

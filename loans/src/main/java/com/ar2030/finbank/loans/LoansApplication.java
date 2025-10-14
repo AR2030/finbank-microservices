@@ -19,7 +19,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
         info = @Info(
                 title = "FinBank Accounts microservice REST API Documentation",
                 description = "FinBank Accounts microservice REST API Documentation",
-                version = "v2",
+                version = "v3",
                 contact = @Contact(
                         name = "AR2030",
                         email = "ar2030@gmail.com",
