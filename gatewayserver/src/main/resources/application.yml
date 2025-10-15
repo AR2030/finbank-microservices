@@ -9,30 +9,19 @@ spring:
         webflux:
           discovery:
             locator:
-              enabled: true
+              enabled: false
               lowerCaseServiceId: true
-          routes:
-           - id: accounts
-             uri: lb://ACCOUNTS
-             predicates:
-               - Path=/api/accounts/**
-             filters:
-               - StripPrefix=1
-               - AddResponseHeader=X-Response-time, '#{T(java.time.Instant).now()}'
-           - id: loans
-             uri: lb://LOANS
-             predicates:
-               - Path=/api/loans/**
-             filters:
-               - StripPrefix=1
-               - AddResponseHeader=X-Response-time, '#{T(java.time.Instant).now()}'
-           - id: cards
-             uri: lb://CARDS
-             predicates:
-               - Path=/api/cards/**
-             filters:
-               - StripPrefix=1
-               - AddResponseHeader=X-Response-time, '#{T(java.time.Instant).now()}'
+          httpclient:
+            connect-timeout: 1000
+            response-timeout: 2s
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      connect-timeout: 2s
+      timeout: 1s
+
 
 management:
   endpoints:
@@ -45,6 +34,15 @@ management:
   info:
     env:
       enabled: true
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 2
+        failureRateThreshold: 50
+        waitDurationInOpenState: 10000
 
 server:
   port: 8072
@@ -60,5 +58,3 @@ logging:
       ar2030:
         finbank:
           gatewayserver: DEBUG
-
-

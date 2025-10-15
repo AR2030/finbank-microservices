@@ -33,6 +33,10 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-circuitbreaker-reactor-resilience4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
 		<dependency>
@@ -76,7 +80,7 @@
 						<image>openjdk:21-jdk-slim</image>
 					</from>
 					<to>
-						<image>ar2030/${project.artifactId}:v5</image>
+						<image>ar2030/${project.artifactId}:v6</image>
 					</to>
 				</configuration>
 			</plugin>

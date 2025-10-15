@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-@FeignClient("loans") // name of the microservice (in Eureka Server) to call
+@FeignClient(name = "loans", fallback = LoansFallback.class)
 public interface LoansFeignClient {
 
     @GetMapping(value = "/api/fetch", consumes = "application/json")
