@@ -1,0 +1,64 @@
+spring:
+  application:
+    name: "gatewayserver"
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lowerCaseServiceId: true
+          routes:
+           - id: accounts
+             uri: lb://ACCOUNTS
+             predicates:
+               - Path=/api/accounts/**
+             filters:
+               - StripPrefix=1
+               - AddResponseHeader=X-Response-time, '#{T(java.time.Instant).now()}'
+           - id: loans
+             uri: lb://LOANS
+             predicates:
+               - Path=/api/loans/**
+             filters:
+               - StripPrefix=1
+               - AddResponseHeader=X-Response-time, '#{T(java.time.Instant).now()}'
+           - id: cards
+             uri: lb://CARDS
+             predicates:
+               - Path=/api/cards/**
+             filters:
+               - StripPrefix=1
+               - AddResponseHeader=X-Response-time, '#{T(java.time.Instant).now()}'
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    gateway:
+        access: unrestricted
+  info:
+    env:
+      enabled: true
+
+server:
+  port: 8072
+
+info:
+  app:
+    name: "gatewayserver"
+    description: "FinBank API Gateway Server"
+    version: "4.0.0"
+logging:
+  level:
+    com:
+      ar2030:
+        finbank:
+          gatewayserver: DEBUG
+
+
