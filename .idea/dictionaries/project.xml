@@ -2,8 +2,11 @@
   <dictionary name="project">
     <words>
       <w>accountsdb</w>
+      <w>eurekaserver</w>
       <w>finbank</w>
+      <w>gatewayserver</w>
       <w>readinessstate</w>
+      <w>resourceserver</w>
     </words>
   </dictionary>
 </component>

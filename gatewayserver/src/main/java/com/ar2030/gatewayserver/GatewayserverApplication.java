@@ -26,18 +26,18 @@ public class GatewayserverApplication {
 	public RouteLocator finbankRouteConfig(RouteLocatorBuilder routeLocatorBuilder) {
 		return routeLocatorBuilder.routes()
 				.route(p -> p
-						.path("/api/accounts/**")
+						.path("/finbank/accounts/**")
 						.filters(f -> f
-								.rewritePath("/api/accounts/(?<segment>.*)", "/${segment}")
+								.rewritePath("/finbank/accounts/(?<segment>.*)", "/${segment}")
 								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
 								.circuitBreaker(config -> config
 										.setName("accountsCircuitBreaker")
 										.setFallbackUri("forward:/contactSupport")))
 						.uri("lb://ACCOUNTS"))
 				.route(p -> p
-						.path("/api/loans/**")
+						.path("/finbank/loans/**")
 						.filters(f -> f
-								.rewritePath("/api/loans/(?<segment>.*)", "/${segment}")
+								.rewritePath("/finbank/loans/(?<segment>.*)", "/${segment}")
 								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
 								.retry(config -> config
 										.setRetries(3)
@@ -46,9 +46,9 @@ public class GatewayserverApplication {
 										.setBackoff(Duration.ofMillis(100), Duration.ofSeconds(1), 2,true)))
 						.uri("lb://LOANS"))
 				.route(p -> p
-						.path("/api/cards/**")
+						.path("/finbank/cards/**")
 						.filters(f -> f
-								.rewritePath("/api/cards/(?<segment>.*)", "/${segment}")
+								.rewritePath("/finbank/cards/(?<segment>.*)", "/${segment}")
 								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
 								.requestRateLimiter(config -> config
 										.setRateLimiter(redisRateLimiter())
