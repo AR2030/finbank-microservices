@@ -9,9 +9,11 @@ spring:
     password: root
   jpa:
     show-sql: true
+    hibernate:
+      ddl-auto: update
   sql:
     init:
-      mode: always
+      mode: never
 
   config:
     import: "optional:configserver:http://localhost:8071"  # config server url
