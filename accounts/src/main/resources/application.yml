@@ -23,11 +23,21 @@ spring:
     port: 5672
     username: guest
     password: guest
+    connection-timeout: 10s
 
   cloud:
     openfeign:
       circuitbreaker:
         enabled: true
+    function:
+        definition: updateCommunication
+    stream:
+      bindings:
+        updateCommunication-in-0:
+          destination: communication-sent  # the exchange name
+          group: ${spring.application.name}
+        sendCommunication-out-0:
+          destination: send-communication  # the exchange name
 
 resilience4j:
   circuitbreaker:
