@@ -91,11 +91,11 @@ services:
       rabbit:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "if command -v curl > /dev/null 2>&1; then curl -fsS http://localhost:8071/actuator/health; elif command -v wget > /dev/null 2>&1; then wget -q -O- http://localhost:8071/actuator/health; else echo 'no-http-client' >&2; exit 1; fi"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8071/actuator/health"]
       interval: 10s
       timeout: 5s
-      retries: 10
-      start_period: 10s
+      retries: 20
+      start_period: 30s
     extends:
       file: common-config.yml
       service: microservices-base-config
