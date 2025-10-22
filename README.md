@@ -17,6 +17,7 @@ A production-ready, cloud-native banking platform built with **Spring Boot** and
 - [Docker Deployment](#docker-deployment)
 - [Monitoring and Health Checks](#monitoring-and-health-checks)
 - [Security](#security)
+- [Future Enhancements](#future-enhancements)
 
 ## 🎯 Overview
 
@@ -533,3 +534,38 @@ This project is licensed under the MIT License.
 ## 📞 Support
 
 For issues and questions, please create an issue in the GitHub repository.
+
+---
+
+## 🚀 Future Enhancements
+
+FinBank has a comprehensive roadmap for future features and improvements. Check out these documents:
+
+### 📄 [Feature Suggestions](./FEATURE_SUGGESTIONS.md)
+Comprehensive list of 25+ features organized by priority:
+- **High Priority**: Transaction Management, Notifications, Monitoring, Testing
+- **Medium Priority**: Customer Portal, Admin Dashboard, Fraud Detection, Payment Gateway
+- **Advanced Features**: Mobile App, AI Chatbot, Blockchain, Open Banking
+- **Developer Tools**: CI/CD, Testing Framework, API Documentation
+
+### ⚡ [Quick Wins](./QUICK_WINS.md)
+Features that can be implemented in 1-2 weeks with high impact:
+1. API Versioning Strategy
+2. Database Migration Tool (Flyway)
+3. Standardized Error Handling
+4. Request/Response Logging
+5. Health Check Enhancements
+6. CORS Configuration
+7. Docker Compose Improvements
+8. API Documentation Portal
+
+### 🗺️ [Implementation Roadmap](./ROADMAP.md)
+Detailed 2-year roadmap with:
+- **Q1**: Production Readiness (Testing, Monitoring, CI/CD)
+- **Q2**: Core Banking (Transactions, Notifications, Documents)
+- **Q3**: Customer Experience (Portals, Dashboards, Analytics)
+- **Q4**: Advanced Features (Payments, Fraud Detection, ML)
+- **Year 2**: Mobile, AI, Open Banking, Multi-tenancy
+
+### Want to Contribute?
+We welcome contributions! Check the roadmap and pick a feature to implement. See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
