@@ -202,20 +202,104 @@ mvn clean install
 mvn clean package -DskipTests
 ```
 
-### Build Docker Images
+### Build Docker Images with Jib
 
-Each service uses Jib to build Docker images:
+The project uses **Google Jib** for building optimized Docker images without requiring a Docker daemon. Jib creates layered images that are optimized for caching and faster deployments.
 
+#### Prerequisites
+- Maven 3.8+ installed
+- Docker daemon running (for `jib:dockerBuild`)
+- Docker Hub account (for `jib:build` to push images)
+
+#### Build Images Locally (Docker Daemon)
+
+Build all services at once from the root directory:
 ```bash
-# Build all services
-mvn clean compile jib:dockerBuild
-
-# Or build individual service
-cd accounts
 mvn clean compile jib:dockerBuild
 ```
 
-This creates Docker images with the naming pattern: `ar2030/{service-name}:v8`
+Or build individual services:
+```bash
+# Build Accounts service
+cd accounts
+mvn clean compile jib:dockerBuild
+
+# Build Loans service
+cd ../loans
+mvn clean compile jib:dockerBuild
+
+# Build Cards service
+cd ../cards
+mvn clean compile jib:dockerBuild
+
+# Build Config Server
+cd ../configserver
+mvn clean compile jib:dockerBuild
+
+# Build Eureka Server
+cd ../eurekaserver
+mvn clean compile jib:dockerBuild
+
+# Build Gateway Server
+cd ../gatewayserver
+mvn clean compile jib:dockerBuild
+```
+
+#### Build and Push Images to Registry
+
+To build and push images directly to Docker Hub (without Docker daemon):
+```bash
+# Build and push all services
+mvn clean compile jib:build
+
+# Or build and push individual service
+cd accounts
+mvn clean compile jib:build
+```
+
+#### Image Naming Convention
+
+Jib creates Docker images with the following naming pattern: `ar2030/{service-name}:v8`
+
+Examples:
+- `ar2030/accounts:v8`
+- `ar2030/loans:v8`
+- `ar2030/cards:v8`
+- `ar2030/configserver:v8`
+- `ar2030/eurekaserver:v8`
+- `ar2030/gatewayserver:v8`
+
+#### Jib Configuration
+
+Each service's `pom.xml` includes Jib configuration:
+```xml
+<plugin>
+    <groupId>com.google.cloud.tools</groupId>
+    <artifactId>jib-maven-plugin</artifactId>
+    <version>3.3.2</version>
+    <configuration>
+        <from>
+            <image>openjdk:21-jdk</image>
+        </from>
+        <to>
+            <image>ar2030/${project.artifactId}:v8</image>
+        </to>
+    </configuration>
+</plugin>
+```
+
+#### Verify Built Images
+
+After building, verify the images:
+```bash
+docker images | grep ar2030
+```
+
+#### Benefits of Using Jib
+- **Fast**: Builds are faster as Jib uses layer caching
+- **Reproducible**: Same input always produces the same image
+- **Daemonless**: `jib:build` doesn't require Docker daemon
+- **Optimized**: Creates layered images for efficient deployment
 
 ## ▶️ Running the Services
 
@@ -296,6 +380,23 @@ After starting all services, verify they are running:
 - **Keycloak Admin**: http://localhost:7080 (admin/admin)
 
 ## 📚 API Documentation
+
+### Postman Collection
+
+A comprehensive Postman collection is included in the repository: `Microservices.postman_collection.json`
+
+**Import the Collection:**
+1. Open Postman
+2. Click **Import** button
+3. Select the `Microservices.postman_collection.json` file from the repository root
+4. The collection includes all API endpoints for:
+   - Accounts Service
+   - Loans Service
+   - Cards Service
+   - Gateway Server
+   - Eureka Server
+   - Keycloak Authentication
+   - Message Service
 
 ### Access API Documentation
 
