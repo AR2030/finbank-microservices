@@ -43,7 +43,9 @@ management:
   info:
     env:
       enabled: true
-
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 eureka:
   instance:
@@ -60,8 +62,6 @@ info:
     version: 4.0.0
 
 logging:
-  level:
-    com:
-      ar2030:
-        finbank:
-          cards: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
+

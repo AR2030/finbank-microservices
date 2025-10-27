@@ -22,8 +22,16 @@ services:
       resources:
         limits:
           memory: 700m
+    depends_on:
+      tempo:
+        condition: service_healthy
     environment:
       SPRING_RABBITMQ_HOST: rabbit
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.27.0.jar"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4318
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+      OTEL_METRICS_EXPORTER: none
+      OTEL_LOGS_EXPORTER: none
 
 
   microservices-configserver-config:
@@ -43,6 +51,6 @@ services:
       eurekaserver:
         condition: service_healthy
     environment:
-      EURKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8070/eureka/"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: "http://eurekaserver:8070/eureka/"
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: root

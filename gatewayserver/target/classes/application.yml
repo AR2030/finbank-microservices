@@ -13,7 +13,7 @@ spring:
               lowerCaseServiceId: true
           httpclient:
             connect-timeout: 1000
-            response-timeout: 2s
+            response-timeout: 10s
 
   data:
     redis:
@@ -54,6 +54,9 @@ management:
   info:
     env:
       enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 resilience4j:
   circuitbreaker:
@@ -73,8 +76,5 @@ info:
     description: "FinBank API Gateway Server"
     version: "4.0.0"
 logging:
-  level:
-    com:
-      ar2030:
-        finbank:
-          gatewayserver: DEBUG
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
