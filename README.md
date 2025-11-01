@@ -33,7 +33,7 @@ FinBank is a microservices-based banking application that demonstrates enterpris
 - **OAuth2/OpenID Connect** authentication with Keycloak
 - **Rate Limiting** with Redis
 - **Containerization** with Docker
-- **Full Observability Stack** with Grafana LGTM (Loki, Grafana, Tempo, Minio)
+- **Full Observability Stack** with Grafana (Loki, Grafana, Tempo, Minio, Prometheus, Alloy)
 
 ## 🏗️ Architecture
 
@@ -302,7 +302,7 @@ docker-compose up -d
 cd docker-compose/prod
 docker-compose up -d
 
-# The production environment includes:
+# Both QA and Production environments include:
 # - All microservices
 # - Complete observability stack (Grafana, Prometheus, Loki, Tempo)
 # - All supporting infrastructure
@@ -363,7 +363,7 @@ After starting all services, verify they are running:
 - **Gateway Server**: http://localhost:8072/actuator/health
 - **Keycloak Admin**: http://localhost:7080 (admin/admin)
 
-#### Observability Tools (Production Environment Only)
+#### Observability Tools (QA and Production Environments)
 - **Grafana Dashboard**: http://localhost:3000
 - **Prometheus**: http://localhost:9090
 - **Tempo**: http://localhost:3110
@@ -494,7 +494,7 @@ The Docker Compose setup includes:
 - **Gateway Server**
 - **3 Business Microservices** (Accounts, Loans, Cards)
 
-#### Observability Stack (Production Environment)
+#### Observability Stack (QA and Production Environments)
 - **Grafana** - Unified observability dashboard
 - **Prometheus** - Metrics collection and storage
 - **Tempo** - Distributed tracing backend
@@ -535,7 +535,7 @@ All services communicate within a Docker bridge network named `finbank`.
 
 ## 📊 Observability and Monitoring
 
-The FinBank microservices platform includes a comprehensive observability stack based on the **Grafana LGTM** (Loki, Grafana, Tempo, Minio) stack, providing full visibility into metrics, logs, and traces.
+The FinBank microservices platform includes a comprehensive observability stack based on the **Grafana observability stack** (Loki, Grafana, Tempo, Minio), providing full visibility into metrics, logs, and traces.
 
 ### Observability Stack Components
 
@@ -605,13 +605,14 @@ The FinBank microservices platform includes a comprehensive observability stack 
   - Real-time log streaming
 
 #### 6. **Minio** - Object Storage
-- **Port**: 9000 (internal)
+- **Port**: 9000 (internal only, not exposed externally)
 - **Purpose**: S3-compatible storage backend for Loki
 - **Features**:
   - Stores log data in `loki-data` bucket
   - Stores ruler data in `loki-ruler` bucket
   - High-performance object storage
 - **Credentials**: loki/supersecret
+- **Note**: Accessed internally by Loki components; no external access needed
 
 ### OpenTelemetry Integration
 
@@ -625,10 +626,15 @@ All microservices are automatically instrumented with **OpenTelemetry Java Agent
 
 ### Accessing Observability Tools
 
-#### Production Environment (docker-compose/prod)
+#### QA and Production Environments
 
 ```bash
 # Start all services including observability stack
+# For QA environment:
+cd docker-compose/qa
+docker-compose up -d
+
+# For Production environment:
 cd docker-compose/prod
 docker-compose up -d
 
@@ -743,7 +749,7 @@ Circuit breaker states can be monitored through:
 2. **No Traces in Tempo**:
    - Verify OpenTelemetry agent is loaded: Check service logs for "opentelemetry-javaagent"
    - Ensure OTEL_EXPORTER_OTLP_ENDPOINT is configured correctly
-   - Check Tempo health: `curl http://localhost:3110/ready`
+   - Check Tempo health: `wget http://localhost:3110/ready` or access via browser
 
 3. **Logs Not Showing in Loki**:
    - Verify Alloy is collecting logs: http://localhost:12345
