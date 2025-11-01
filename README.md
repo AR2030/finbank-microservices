@@ -749,7 +749,8 @@ Circuit breaker states can be monitored through:
 2. **No Traces in Tempo**:
    - Verify OpenTelemetry agent is loaded: Check service logs for "opentelemetry-javaagent"
    - Ensure OTEL_EXPORTER_OTLP_ENDPOINT is configured correctly
-   - Check Tempo health: `wget http://localhost:3110/ready` or access via browser
+   - Check Tempo readiness: `wget http://localhost:3110/ready` or `curl http://localhost:3110/ready`
+   - Verify OTLP endpoint is accessible: `curl http://localhost:4318`
 
 3. **Logs Not Showing in Loki**:
    - Verify Alloy is collecting logs: http://localhost:12345
